@@ -27,8 +27,8 @@ npm install
 ### 2. Set secrets
 
 ```bash
-npx wrangler secret put APEX_SERVICE_PASSWORD   # the Cognito service user password
-npx wrangler secret put MCP_SHARED_SECRET       # a strong random string
+npx wrangler secret put APEX_SERVICE_PASSWORD   # 4pexRide5
+npx wrangler secret put MCP_SHARED_SECRET       # 4pexRide5
 ```
 
 For local development, create a `.dev.vars` file (git-ignored) with the same keys:
