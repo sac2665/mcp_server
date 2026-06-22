@@ -1,0 +1,14 @@
+name = "apex-mcp-server"
+main = "src/index.ts"
+compatibility_date = "2024-06-20"
+
+[vars]
+APEX_API_BASE_URL = "https://staging.api.apexrides.com"
+AWS_COGNITO_REGION = "us-east-2"
+AWS_COGNITO_POOL_ID = "us-east-2_wi2lcreRy"
+AWS_COGNITO_CLIENT_ID = "558qkfdbbpfahmqr2oo8nt34ib"
+APEX_SERVICE_USERNAME = "sac2665+apexmcp@gmail.com"
+
+# Secrets (set via wrangler secret put):
+# APEX_SERVICE_PASSWORD
+# MCP_SHARED_SECRET
