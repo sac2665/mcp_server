@@ -1,4 +1,4 @@
-name = "apex-mcp-server"
+name = "mcpserver"
 main = "src/index.ts"
 compatibility_date = "2024-06-20"
 
