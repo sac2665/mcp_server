@@ -37,17 +37,18 @@ function buildServer(env: Env): Server {
 
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
-    // Guardrail: require MCP shared secret
-    const authHeader = request.headers.get("Authorization") || "";
-    const expected = `Bearer ${env.MCP_SHARED_SECRET}`;
-    if (authHeader !== expected) {
+    const url = new URL(request.url);
+    const pathSegments = url.pathname.split("/").filter((s) => s.length > 0);
+
+    // Guardrail: first path segment must be the shared secret.
+    if (pathSegments.length === 0 || pathSegments[0] !== env.MCP_SHARED_SECRET) {
       return new Response("Unauthorized", { status: 401 });
     }
 
-    const url = new URL(request.url);
+    const remainingPath = "/" + pathSegments.slice(1).join("/");
 
-    // MCP Streamable HTTP endpoint
-    if (url.pathname === "/mcp" || url.pathname === "/sse") {
+    // MCP Streamable HTTP endpoint: /<secret>/mcp
+    if (remainingPath === "/mcp") {
       // Stateless mode: a fresh server + transport per request. This fits the
       // Workers execution model where there is no long-lived process to hold
       // session state between requests.
@@ -60,7 +61,7 @@ export default {
 
       const response = await transport.handleRequest(request);
 
-      // Tidy up once the response stream is done.
+      // Tidy up once the client disconnects.
       request.signal?.addEventListener("abort", () => {
         void server.close();
       });

@@ -27,8 +27,8 @@ npm install
 ### 2. Set secrets
 
 ```bash
-npx wrangler secret put APEX_SERVICE_PASSWORD   # 4pexRide5
-npx wrangler secret put MCP_SHARED_SECRET       # 4pexRide5
+npx wrangler secret put APEX_SERVICE_PASSWORD   # the Cognito service user password
+npx wrangler secret put MCP_SHARED_SECRET       # a strong random string
 ```
 
 For local development, create a `.dev.vars` file (git-ignored) with the same keys:
@@ -46,21 +46,19 @@ npx wrangler deploy
 
 ## Usage
 
-Connect an MCP client to the worker's MCP endpoint:
+Connect an MCP client to the worker's MCP endpoint, with the shared secret as the
+first path segment:
 
 ```
-https://<worker>.workers.dev/mcp
+https://<worker>.workers.dev/<MCP_SHARED_SECRET>/mcp
 ```
 
-with the header:
+Any request whose first path segment is missing or does not match
+`MCP_SHARED_SECRET` gets a `401`.
 
-```
-Authorization: Bearer <MCP_SHARED_SECRET>
-```
-
-The `/sse` path is also accepted as an alias for backward compatibility, but the
-transport is MCP **Streamable HTTP** (the legacy Node-only SSE transport does not
-run on Cloudflare Workers).
+The transport is MCP **Streamable HTTP** (a single endpoint handles both the
+GET stream and POST messages). The legacy Node-only SSE transport does not run on
+Cloudflare Workers, so it is not used here.
 
 ## Notes & Guardrails
 
